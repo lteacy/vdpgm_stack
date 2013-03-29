@@ -1,0 +1,15 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b vdpgm_msgs 
+
+<!-- 
+Provides messages and services used to interface with
+Matlab Variational Dirichlet Process Gaussian Mixture Models code.
+-->
+
+-->
+
+
+*/

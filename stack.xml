@@ -1,0 +1,14 @@
+<stack>
+  <description brief="vdpgm stack">
+    The vdpgm stack provides a ROS inteface to the matlab code written by
+    Kenichi Kurihara for Variational Dirichlet Process Gaussian Mixture Models.
+    The contained packages should be migrated to catkin, but since rosjava
+    still lives in the world of rosmake, we're sticking with the old regime
+    for now.
+  </description>
+  <author>Maintained by Luke Teacy (wtlt@ecs.soton.ac.uk)</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes="" />
+  <url>http://mosaicproject.info</url>
+</stack>
+

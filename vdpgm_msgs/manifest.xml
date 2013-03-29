@@ -1,0 +1,17 @@
+<package>
+  <description brief="vdpgm_msgs">
+
+     vdpgm_msgs
+
+  </description>
+  <author>Luke Teacy</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/vdpgm_msgs</url>
+
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+
+</package>
+
+
