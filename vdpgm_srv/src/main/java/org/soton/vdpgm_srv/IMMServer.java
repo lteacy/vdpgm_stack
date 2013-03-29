@@ -19,6 +19,8 @@ import vdpgm_msgs.*;
 public class IMMServer extends AbstractNodeMain
 {
 
+   private InfiniteMixtureModel model_i;
+
    @Override
    public GraphName getDefaultNodeName()
    {
@@ -29,6 +31,9 @@ public class IMMServer extends AbstractNodeMain
    public void onStart(ConnectedNode node)
    {
       final Log log = node.getLog();
+
+      model_i = new InfiniteMixtureModel(log,node.getTopicMessageFactory());
+
       Subscriber<DataStamped> subscriber = node.newSubscriber("vdpgm/data", DataStamped._TYPE);
       subscriber.addMessageListener(new MessageListener<DataStamped>()
          {
@@ -36,11 +41,20 @@ public class IMMServer extends AbstractNodeMain
             public void onNewMessage(DataStamped message)
             {
                log.info("I heard: \"" + message.getData() + "\"");
+               model_i.observe(message.getData());
             }
          });
 
       node.newServiceServer("vdpgm/get_imm", GetModel._TYPE,
-            new IMMResponder(node.getTopicMessageFactory()));
+         new ServiceResponseBuilder<GetModelRequest, GetModelResponse>()
+         {
+            @Override
+            public void build(GetModelRequest request, GetModelResponse response)
+            {
+               log.info("I've been asked for the current model");
+               response.setModel(model_i.getModel());
+            }
+         });
 
       node.newServiceServer("vdpgm/reset", Reset._TYPE,
          new ServiceResponseBuilder<ResetRequest, ResetResponse>()
@@ -48,8 +62,8 @@ public class IMMServer extends AbstractNodeMain
             @Override
             public void build(ResetRequest request, ResetResponse response)
             {
-               // clear all previously received data
                log.info("I've been asked to reset");
+               model_i.reset();
             }
          });
 
