@@ -1,6 +1,5 @@
 package org.soton.vdpgm_srv;
 
-import vdpgm_msgs.AddTwoInts;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
@@ -23,9 +22,9 @@ public class IMMServer extends AbstractNodeMain
    }
 
    @Override
-   public void onStart(ConnectedNode connectedNode)
+   public void onStart(ConnectedNode node)
    {
-      connectedNode.newServiceServer("vdpgm/get_imm", vdpgm_msgs.AddTwoInts._TYPE, new IMMResponder());
+      node.newServiceServer("vdpgm/get_imm", vdpgm_msgs.GetModel._TYPE, new IMMResponder(node.getTopicMessageFactory()));
 
    } // method onStart
 
