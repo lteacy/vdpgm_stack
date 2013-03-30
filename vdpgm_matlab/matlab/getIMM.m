@@ -1,5 +1,9 @@
-function [mu,Sigma,weights] = getIMM(data)
+function [mu,Sigma,weights] = getIMM(given_data,M,N)
 
+%*******************************************************************************
+%  Reshape vector data from java into matrix
+%*******************************************************************************
+data = reshape(given_data,M,N);
 
 %*******************************************************************************
 %  Set up the algorithm options to use accelerated variational Dirichlet
