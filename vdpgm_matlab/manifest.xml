@@ -1,0 +1,14 @@
+<package>
+  <description brief="vdpgm_matlab">
+
+     vdpgm_matlab
+
+  </description>
+  <author>Luke Teacy</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/vdpgm_matlab</url>
+
+</package>
+
+
