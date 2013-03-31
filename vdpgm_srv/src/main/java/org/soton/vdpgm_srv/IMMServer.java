@@ -1,11 +1,14 @@
 package org.soton.vdpgm_srv;
 
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import org.apache.commons.logging.Log;
 import org.ros.message.MessageListener;
 import org.ros.node.topic.Subscriber;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.exception.ServiceException;
 import org.ros.node.NodeMain;
 import org.ros.node.service.ServiceResponseBuilder;
 import org.ros.node.service.ServiceServer;
@@ -32,7 +35,17 @@ public class IMMServer extends AbstractNodeMain
    {
       final Log log = node.getLog();
 
-      model_i = new InfiniteMixtureModel(log,node.getTopicMessageFactory());
+      try
+      {
+         model_i = new InfiniteMixtureModel(log,node.getTopicMessageFactory());
+      }
+      catch(Exception e)
+      {
+         java.io.StringWriter errors = new StringWriter();
+         e.printStackTrace(new PrintWriter(errors));
+         log.error("Exception thrown while constructing matlab model:\n" + errors.toString());
+         onError(node,e);
+      }
 
       Subscriber<DataStamped> subscriber = node.newSubscriber("vdpgm/data", DataStamped._TYPE);
       subscriber.addMessageListener(new MessageListener<DataStamped>()
@@ -49,10 +62,20 @@ public class IMMServer extends AbstractNodeMain
          new ServiceResponseBuilder<GetModelRequest, GetModelResponse>()
          {
             @Override
-            public void build(GetModelRequest request, GetModelResponse response)
+            public void build(GetModelRequest request, GetModelResponse response) throws ServiceException
             {
                log.info("I've been asked for the current model");
-               response.setModel(model_i.getModel());
+               try
+               {
+                  response.setModel(model_i.getModel());
+               }
+               catch(Exception e)
+               {
+                  java.io.StringWriter errors = new StringWriter();
+                  e.printStackTrace(new PrintWriter(errors));
+                  log.error("Exception thrown while servicing model request:\n" + errors.toString());
+                  throw new org.ros.exception.ServiceException(e);
+               }
             }
          });
 
