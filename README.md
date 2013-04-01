@@ -70,3 +70,17 @@ Possible improvements to think about in the future:
   than let the model choose this for itself. This would also allow the model to work with no prior data.
 * Rewrite the whole thing in python. This would be much more elegant, but would require a rewrite of Kenichi Kurihara's
   matlab code. Might be able to use this: http://ompc.juricap.com
+
+References
+==========
+
+* Kenichi Kurihara, Max Welling and Yee Whye Teh,
+  Collapsed Variational Dirichlet Process Mixture Models,
+  the Twentieth International Joint Conference on Artificial Intelligence (IJCAI 2007). 
+
+* Kenichi Kurihara, Max Welling and Nikos Vlassis,
+  Accelerated Variational Dirichlet Mixture Models,
+  Advances in Neural Information Processing Systems 19 (NIPS 2006). 
+
+* David M. Blei and Michael I. Jordan, Variational Inference for Dirichlet Process Mixtures,
+  Bayesian Analysis, Vol.1, No.1, 2005.
