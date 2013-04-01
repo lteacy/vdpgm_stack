@@ -45,8 +45,11 @@ public class InfiniteMixtureModel
 
    /**
     * Constructor.
+    * @param nDims number of dimensions for this mixture model
+    * @param log logger for diagnostics
+    * @param factory for making messages and ROS service responses
     */
-   public InfiniteMixtureModel(Log log, MessageFactory factory) throws IMMException
+   public InfiniteMixtureModel(int nDims, Log log, MessageFactory factory) throws IMMException
    {
       try
       {
@@ -54,7 +57,7 @@ public class InfiniteMixtureModel
          msgFactory_i = factory;
          log_i.info("Setting up Matlab");
          matlab_i = new MatlabWrapper();
-         nDims_i = 2;
+         nDims_i = nDims;
          nPoints_i = 0;
          dataList_i = new ArrayList<Double>(2000);
       }

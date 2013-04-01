@@ -12,6 +12,7 @@ import org.ros.exception.ServiceException;
 import org.ros.node.NodeMain;
 import org.ros.node.service.ServiceResponseBuilder;
 import org.ros.node.service.ServiceServer;
+import org.ros.node.parameter.ParameterTree;
 import vdpgm_msgs.*;
 
 /**
@@ -37,7 +38,10 @@ public class IMMServer extends AbstractNodeMain
 
       try
       {
-         model_i = new InfiniteMixtureModel(log,node.getTopicMessageFactory());
+         ParameterTree params = node.getParameterTree();
+         int nDims = params.getInteger(node.getName().toString() + "/dims",2);
+         log.info("Number of dimensions set to " + nDims);
+         model_i = new InfiniteMixtureModel(nDims,log,node.getTopicMessageFactory());
       }
       catch(Exception e)
       {
