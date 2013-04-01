@@ -46,6 +46,7 @@ To run and test the installation, do the following
     
 In a separate terminal, do:
 
+    source ~/my_workspace/setup.bash
     roscd vdpgm_srv
     rostopic pub /vdpgm/data vdpgm_msgs/DataStamped -f testData.yaml
     rosservice call /vdpgm/get_imm
