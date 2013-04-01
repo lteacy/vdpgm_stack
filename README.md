@@ -14,7 +14,7 @@ Assuming you are using groovy on ubuntu, and have not yet installed rosjava, do 
     mkdir ~/my_workspace
     cd ~/my_workspace
     rosws init
-    rosws merge /opt/ros/electric/.rosinstall
+    rosws merge /opt/ros/groovy/.rosinstall
     rosws merge http://rosjava.googlecode.com/hg/.rosinstall
     rosws merge https://raw.github.com/lteacy/vdpgm_stack/master/rosinstall
     rosws update
