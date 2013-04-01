@@ -46,18 +46,25 @@ public class InfiniteMixtureModel
    /**
     * Constructor.
     */
-   public InfiniteMixtureModel(Log log, MessageFactory factory) throws MWException
+   public InfiniteMixtureModel(Log log, MessageFactory factory) throws IMMException
    {
-      log_i = log;
-      msgFactory_i = factory;
-      log_i.info("Setting up Matlab");
-      matlab_i = new MatlabWrapper();
-      nDims_i = 2;
-      nPoints_i = 0;
-      dataList_i = new ArrayList<Double>(2000);
-      double[] inData = {0,0, 1,2, -2,0, -1,6, 2,-1, 100,101, 102,100, 101,99};
-      log_i.info("Observing Initial data");
-      observe(inData);
+      try
+      {
+         log_i = log;
+         msgFactory_i = factory;
+         log_i.info("Setting up Matlab");
+         matlab_i = new MatlabWrapper();
+         nDims_i = 2;
+         nPoints_i = 0;
+         dataList_i = new ArrayList<Double>(2000);
+         double[] inData = {0,0, 1,2, -2,0, -1,6, 2,-1, 100,101, 102,100, 101,99};
+         log_i.info("Observing Initial data");
+         observe(inData);
+      }
+      catch(MWException e)
+      {
+         throw new IMMException("Error encountered during model construction",e);
+      }
    }
 
    /**
@@ -73,19 +80,21 @@ public class InfiniteMixtureModel
    /**
     * Update model with given data in ROS Data message.
     */
-   public synchronized void observe(vdpgm_msgs.Data data)
+   public synchronized void observe(vdpgm_msgs.Data data) throws IMMException
    {
       log_i.info("Observed new data.");
       double[] values = data.getVals();
 
       if(data.getNDims()!=nDims_i)
       {
-         //TODO throw exception
+         throw new IMMException("Trying to observe data of dimension " +
+               data.getNDims() + " for model of dimension " + nDims_i);
       }
 
       if(values.length != nDims_i*data.getNPoints())
       {
-         //TODO throw exception
+         throw new IMMException("Observed data vector as inconsistent length: " +
+               values.length + "!=" + nDims_i + "x" + data.getNPoints());
       }
 
       observe(values);
@@ -95,9 +104,14 @@ public class InfiniteMixtureModel
    /**
     * Update model with given data in primitive array.
     */
-   public synchronized void observe(double[] data)
+   public synchronized void observe(double[] data) throws IMMException
    {
-      //TODO throw exception if data length is not divisable by nDims_i
+     if(0!=(data.length % nDims_i))
+     {
+        throw new IMMException("Observed data vector length not divisible by "
+              + "number of dimensions!");
+     }
+
       for(double datum : data)
       {
          dataList_i.add(datum);
@@ -109,17 +123,27 @@ public class InfiniteMixtureModel
    /**
     * Returns expected mixture model, given data observed so far.
     */
-   public synchronized vdpgm_msgs.GaussianMixture getModel() throws MWException
+   public synchronized vdpgm_msgs.GaussianMixture getModel() throws IMMException
    {
       Object[] results = null;
       try
       {
          //*********************************************************************
+         // Currently our matlab code only works if we have at least two
+         // observations
+         //*********************************************************************
+         if(2>nPoints_i)
+         {
+            throw new IMMException("Need at least 2 data points to estimate" +
+                  " model, but got only " + nPoints_i);
+         }
+
+         //*********************************************************************
          // Try to call matlab to get model
          //*********************************************************************
-         log_i.info("matlab: " + matlab_i);
+         log_i.info("Getting Model from Matlab...");
+         log_i.debug("matlab: " + matlab_i);
          log_i.info("data  : " + dataList_i);
-         log_i.info("array : " + dataList_i.toArray());
          results = matlab_i.getIMM(3,dataList_i.toArray(),nDims_i,nPoints_i);
 
          //*********************************************************************
@@ -129,20 +153,39 @@ public class InfiniteMixtureModel
          double[] covar   = ((MWNumericArray) results[1]).getDoubleData();
          double[] weights = ((MWNumericArray) results[2]).getDoubleData();
 
+         log_i.info("GOT...");
+         log_i.info("means:\n" + results[0]);
+         log_i.info("covar:\n" + results[1]);
+         log_i.info("weights:\n" + results[2]);
+         log_i.info("means length:\n" + means.length);
+         log_i.info("covar length:\n" + covar.length);
+         log_i.info("weights length:\n" + weights.length);
+
          //*********************************************************************
          // Check that number of components and dimensions are consistent
          //*********************************************************************
          int nComponents = weights.length;
          int nDims = means.length / nComponents;
-         
-         if(means.length != nComponents*nDims)
+         log_i.info("weights length:\n" + weights.length);
+         log_i.info("nComponents:\n" + nComponents);
+         log_i.info("nDims:\n" + nDims);
+         log_i.info("nDims_i:\n" + nDims_i);
+
+         if(nDims != nDims_i)
          {
-            // TODO THROW SOME ERROR
+            throw new IMMException("Matlab returned " + nDims + " dimensions "
+                  + " but we expected " + nDims_i);
+         }
+         
+         if(means.length != nComponents*nDims_i)
+         {
+            throw new IMMException("Matlab returned wrong number of means");
          }
 
-         if(covar.length != nComponents*nComponents*nDims)
+         if(covar.length != nComponents*nDims_i*nDims_i)
          {
-            // TODO THROW SOME ERROR
+            throw new IMMException("Matlab returned wrong number of " 
+                  + "covariances");
          }
 
          //*********************************************************************
@@ -159,14 +202,17 @@ public class InfiniteMixtureModel
             //******************************************************************
             // Extract parameters
             //******************************************************************
+            log_i.info("making component " + k);
             int meanStart = k*nDims;
-            int meanEnd = (k+1)*nDims-1;
+            int meanEnd = (k+1)*nDims;
             double[] curMean = Arrays.copyOfRange(means,meanStart,meanEnd);
             
             int varStart = k*nDims*nDims;
-            int varEnd   = (k+1)*nDims*nDims-1;
+            int varEnd   = (k+1)*nDims*nDims;
             double[] curVar  = Arrays.copyOfRange(covar,varStart,varEnd);
 
+            log_i.info("mean range: " + meanStart + "-" + meanEnd);
+            log_i.info("var  range: " + varStart + "-" + varEnd);
             //******************************************************************
             // Add parameters and stick component into the list
             //******************************************************************
@@ -196,7 +242,7 @@ public class InfiniteMixtureModel
          log_i.error("Caught Exception in InfiniteMixtureModel.observe(): "
                + e.toString());
 
-         throw e;
+         throw new IMMException(e);
       }
       //************************************************************************
       // Clean up matlab native resources 

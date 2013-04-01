@@ -54,7 +54,17 @@ public class IMMServer extends AbstractNodeMain
             public void onNewMessage(DataStamped message)
             {
                log.info("I heard: \"" + message.getData() + "\"");
-               model_i.observe(message.getData());
+               try
+               {
+                  model_i.observe(message.getData());
+               }
+               catch(Exception e)
+               {
+                  java.io.StringWriter errors = new StringWriter();
+                  e.printStackTrace(new PrintWriter(errors));
+                  log.error("Exception thrown while observing data:\n" + errors.toString());
+                  log.error("Failed to observe data due to previous error.");
+               }
             }
          });
 

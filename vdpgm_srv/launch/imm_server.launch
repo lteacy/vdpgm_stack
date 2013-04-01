@@ -1,0 +1,6 @@
+<launch>
+
+   <env name="LD_LIBRARY_PATH" value="$(optenv LD_LIBRARY_PATH):/usr/local/MATLAB/R2012b/runtime/glnxa64"/>
+   <node pkg="vdpgm_srv" name="imm_server" type="execute" args="org.soton.vdpgm_srv.IMMServer"/>
+   
+</launch>
