@@ -14,4 +14,4 @@
  * the License.
  */
 
-include 'vdpgm_matlab', 'vdpgm_srv'
+include 'vdpgm_srv'

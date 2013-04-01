@@ -6,5 +6,5 @@ mainClassName = 'org.ros.RosRun'
 dependencies {
   compile 'ros.rosjava_core:rosjava:0.0.0-SNAPSHOT'
   compile 'ros.rosjava_core:rosjava'
-  compile project(':vdpgm_matlab')
+  compile fileTree(dir: 'jars', include: '*.jar')
 }
