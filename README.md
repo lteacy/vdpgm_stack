@@ -7,7 +7,7 @@ Installation Instructions
 =========================
 Install matlab revision R2012b or the equivalent MCR.
 
-Make sure your are using java jdk 6 (rosjava_core currently will not build with jdk 7).
+Make sure you are using java jdk 6 (rosjava_core currently will not build with jdk 7).
 
 Assuming you are using groovy on ubuntu, and have not yet installed rosjava, do the following:
 
