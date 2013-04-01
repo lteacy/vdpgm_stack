@@ -57,9 +57,6 @@ public class InfiniteMixtureModel
          nDims_i = 2;
          nPoints_i = 0;
          dataList_i = new ArrayList<Double>(2000);
-         double[] inData = {0,0, 1,2, -2,0, -1,6, 2,-1, 100,101, 102,100, 101,99};
-         log_i.info("Observing Initial data");
-         observe(inData);
       }
       catch(MWException e)
       {
@@ -143,7 +140,7 @@ public class InfiniteMixtureModel
          //*********************************************************************
          log_i.info("Getting Model from Matlab...");
          log_i.debug("matlab: " + matlab_i);
-         log_i.info("data  : " + dataList_i);
+         log_i.debug("data  : " + dataList_i);
          results = matlab_i.getIMM(3,dataList_i.toArray(),nDims_i,nPoints_i);
 
          //*********************************************************************
@@ -153,23 +150,23 @@ public class InfiniteMixtureModel
          double[] covar   = ((MWNumericArray) results[1]).getDoubleData();
          double[] weights = ((MWNumericArray) results[2]).getDoubleData();
 
-         log_i.info("GOT...");
-         log_i.info("means:\n" + results[0]);
-         log_i.info("covar:\n" + results[1]);
-         log_i.info("weights:\n" + results[2]);
-         log_i.info("means length:\n" + means.length);
-         log_i.info("covar length:\n" + covar.length);
-         log_i.info("weights length:\n" + weights.length);
+         log_i.debug("GOT...");
+         log_i.debug("means:\n" + results[0]);
+         log_i.debug("covar:\n" + results[1]);
+         log_i.debug("weights:\n" + results[2]);
+         log_i.debug("means length:\n" + means.length);
+         log_i.debug("covar length:\n" + covar.length);
+         log_i.debug("weights length:\n" + weights.length);
 
          //*********************************************************************
          // Check that number of components and dimensions are consistent
          //*********************************************************************
          int nComponents = weights.length;
          int nDims = means.length / nComponents;
-         log_i.info("weights length:\n" + weights.length);
-         log_i.info("nComponents:\n" + nComponents);
-         log_i.info("nDims:\n" + nDims);
-         log_i.info("nDims_i:\n" + nDims_i);
+         log_i.debug("weights length:\n" + weights.length);
+         log_i.debug("nComponents:\n" + nComponents);
+         log_i.debug("nDims:\n" + nDims);
+         log_i.debug("nDims_i:\n" + nDims_i);
 
          if(nDims != nDims_i)
          {
@@ -202,7 +199,7 @@ public class InfiniteMixtureModel
             //******************************************************************
             // Extract parameters
             //******************************************************************
-            log_i.info("making component " + k);
+            log_i.debug("making component " + k);
             int meanStart = k*nDims;
             int meanEnd = (k+1)*nDims;
             double[] curMean = Arrays.copyOfRange(means,meanStart,meanEnd);
@@ -211,8 +208,8 @@ public class InfiniteMixtureModel
             int varEnd   = (k+1)*nDims*nDims;
             double[] curVar  = Arrays.copyOfRange(covar,varStart,varEnd);
 
-            log_i.info("mean range: " + meanStart + "-" + meanEnd);
-            log_i.info("var  range: " + varStart + "-" + varEnd);
+            log_i.debug("mean range: " + meanStart + "-" + meanEnd);
+            log_i.debug("var  range: " + varStart + "-" + varEnd);
             //******************************************************************
             // Add parameters and stick component into the list
             //******************************************************************
