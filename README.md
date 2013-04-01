@@ -59,4 +59,14 @@ Note that the matlab code is prebuild using javabuilder for Matlab R2012b.
 To use a different version of matlab, or change the behaviour of the matlab code, you must manually use matlab jbuilder
 to replace the jar files in the jars directory.
 
-
+Future Work
+===========
+Possible improvements to think about in the future:
+* Modify server to maintain separate models in parallel. At the moment this might be achieved by running separate
+  server instances, but these would each have a separate matlab runtime environment. Might be more efficient to share
+  a single instance.
+* Allow prior model to be specified using ros parameter service, or ros messages. This would require support in the
+  matlab code. In particular, we might want to specify different priors for the covariance of each component, rather
+  than let the model choose this for itself. This would also allow the model to work with no prior data.
+* Rewrite the whole thing in python. This would be much more elegant, but would require a rewrite of Kenichi Kurihara's
+  matlab code. Might be able to use this: http://ompc.juricap.com
