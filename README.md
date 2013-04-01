@@ -5,8 +5,9 @@ Provides ROS Interface to Kenichi Kurihara's matlab code for Variational Dirichl
 
 Installation Instructions
 =========================
-* Install matlab revision R2012b or the equivalent MCR
-* Assuming you are using groovy, and have not yet installed rosjava, do the following:
+Install matlab revision R2012b or the equivalent MCR
+
+Assuming you are using groovy, and have not yet installed rosjava, do the following:
 
     sudo apt-get install python-pip
     sudo pip install --upgrade rosinstall
@@ -19,17 +20,17 @@ Installation Instructions
     rosws update
     source setup.bash
 
-* Now build things in the following order
+Now build things in the following order
 
     rosmake vdpgm_msgs
     roscd rosjava_core
     ./gradlew install
 
-* To run tests on rosjava, do the following in the same directory
+To run tests on rosjava, do the following in the same directory
 
     ./gradlew test
 
-* Now build the vdpgm package:
+Now build the vdpgm package:
 
     roscd vdpgm_srv
     make
