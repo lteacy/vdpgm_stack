@@ -41,6 +41,9 @@ To run and test the installation, do the following
 
     roscd vdpgm_srv
     roslaunch launch/imm_server.launch
+    
+In a separate terminal, do:
+
     rostopic pub /vdpgm/data vdpgm_msgs/DataStamped -f testData.yaml
     rosservice call /vdpgm/get_imm
 
