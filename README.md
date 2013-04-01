@@ -7,7 +7,7 @@ Installation Instructions
 =========================
 Install matlab revision R2012b or the equivalent MCR
 
-Assuming you are using groovy, and have not yet installed rosjava, do the following:
+Assuming you are using groovy on ubuntu, and have not yet installed rosjava, do the following:
 
     sudo apt-get install python-pip
     sudo pip install --upgrade rosinstall
@@ -48,4 +48,11 @@ In a separate terminal, do:
     rosservice call /vdpgm/get_imm
 
 You should see parameters for the fitted gaussian mixture printed out in yaml format.
+
+Modifying MATLAB code
+=====================
+Note that the matlab code is prebuild using javabuilder for Matlab R2012b.
+To use a different version of matlab, or change the behaviour of the matlab code, you must manually use matlab jbuilder
+to replace the jar files in the jars directory.
+
 
